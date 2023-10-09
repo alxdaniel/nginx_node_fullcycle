@@ -1,0 +1,95 @@
+version: '3.9'
+
+## melhor usar secrets, utilizando environment aqui a título de exercício
+x-common-environment: &common-environment
+  DB_HOST: "db"
+  DB_DATABASE: "nodedb"
+  DB_USERNAME: "root"
+  DB_PASSWORD: "root"
+  DB_MASTER_PASSWORD: "root"
+  DB_MASTER_USERNAME: "root"
+
+volumes:
+  mysql-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./mysql
+
+  node-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./node
+
+  nginx-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./nginx
+
+services:
+  nginx:
+    build: 
+      context: nginx
+    container_name: nginx_fcycle_reverse
+    ports: 
+      - 8080:8080
+    volumes:
+      - nginx-data:/etc/nginx
+    networks:
+      - fcycle-network
+    depends_on:
+      app:
+        condition: service_healthy
+
+  db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: mysql_fcycle
+    restart: always
+    tty: true
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASENAME:-nodedb}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+    networks:
+      - fcycle-network     
+    healthcheck:
+      test: mysql -h localhost -u ${DB_USER:-root} -p${DB_PASSWORD:-root} 
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+
+  app:
+    build:
+      context: node
+    container_name: app_fcycle
+    networks:
+      - fcycle-network
+    volumes:
+      - node-data:/usr/src/app       
+    environment:
+       <<: *common-environment
+    tty: true
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: node ./healthcheck.js
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+    command: >
+      sh -c "node create_database.js &&
+             node index.js"
+           
+networks:
+  fcycle-network:
+    driver: bridge
