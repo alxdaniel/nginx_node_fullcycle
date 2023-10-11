@@ -23,4 +23,4 @@ Para gerar as imagens utilizar o comando `docker-compose build`
 ## Run
 - Para rodar a imagem: `docker-compose up`
 - OBS: o container do nginx depende do node para subir, então pode levar uns 10 a 20 segundos para o nginx responder
-Acessar localhost:8080 
+- Acessar localhost:8080 
