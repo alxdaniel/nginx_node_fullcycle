@@ -21,5 +21,5 @@ Projeto desafio do curso Full Cycle 3.0. Proxy reverso com nginx que roteia para
 Para gerar as imagens utilizar o comando `docker-compose build`
 
 ## Run
-Para rodar a imagem: `docker-compose up` ou buildar e rodar em seguida `docker-compose up --build`.
+Para rodar a imagem: `docker-compose up`
 Acessar localhost:8080 
