@@ -22,4 +22,4 @@ Para gerar as imagens utilizar o comando `docker-compose build`
 
 ## Run
 Para rodar a imagem: `docker-compose up` ou buildar e rodar em seguida `docker-compose up --build`.
-Acessar localhost:8080"#" 
+Acessar localhost:8080 
