@@ -37,7 +37,7 @@ function generateName()  {
 
 function nameToDatabase(name) {    
     return new Promise((resolve, reject) => {
-        pool.query('INSERT INTO PEOPLE(name) VALUES (?)', [name], (error, result) => {
+        pool.query('INSERT INTO people(name) VALUES (?)', [name], (error, result) => {
             if (error) {
                 return reject(error);
             }
@@ -48,7 +48,7 @@ function nameToDatabase(name) {
 
 function namesFromDatabase() {
     return new Promise((resolve, reject)  => {
-        pool.query("SELECT name FROM PEOPLE", (error, rows) => {
+        pool.query("SELECT name FROM people", (error, rows) => {
             if (error) {
                 return reject(error);
             };

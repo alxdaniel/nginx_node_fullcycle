@@ -16,20 +16,20 @@ volumes:
       type: none
       o: bind
       device: ./mysql
-
-  node-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./node
-
+  
   nginx-data:
     driver: local
     driver_opts:
       type: none
       o: bind
       device: ./nginx
+
+  node-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./node      
 
 services:
   nginx:
@@ -68,18 +68,18 @@ services:
 
   app:
     build:
-      context: node
+      context: ./node
     container_name: app_fcycle
     networks:
       - fcycle-network
-    volumes:
-      - node-data:/usr/src/app       
     environment:
        <<: *common-environment
     tty: true
+    volumes:
+      - node-data:/usr/src/app
     depends_on:
       db:
-        condition: service_healthy
+        condition: service_healthy 
     healthcheck:
       test: node ./healthcheck.js
       interval: 10s
@@ -87,8 +87,7 @@ services:
       retries: 10
       start_period: 10s
     command: >
-      sh -c "node create_database.js &&
-             node index.js"
+      sh -c "npm i && node create_database.js && node index.js"
            
 networks:
   fcycle-network:

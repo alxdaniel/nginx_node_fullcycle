@@ -25,4 +25,3 @@ Promise.allSettled([createDb, createTb]).then((result) => {
             process.exit(0);
         }, 3000);        
     });
-
